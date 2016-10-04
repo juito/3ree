@@ -1,18 +1,29 @@
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 var webpack = require('webpack');
 var WebpackDevServer = require('webpack-dev-server');
-var config = require('./webpack.config');
 
-new WebpackDevServer(webpack(config), {
-  publicPath: config.output.publicPath,
-  hot: true,
+var config = require('config');
+var webpackConfig = require('./webpack.config');
+
+var host = 'localhost';
+var appPort = 3000;
+var devServerPort = 3001;
+
+new WebpackDevServer(webpack(webpackConfig), {
+  contentBase: [ config.get('buildDirectory'), '/' ].join(''),
+  headers: { 'Access-Control-Allow-Origin': '*' },
   historyApiFallback: true,
-  stats: {
-    colors: true
+  hot: true,
+  noInfo: false,
+  publicPath: webpackConfig.output.publicPath,
+  proxy: {
+    '*': 'http://' + host + ':' + appPort
   }
-}).listen(3000, 'localhost', function (err) {
+}).listen(devServerPort, host, function (err) {
   if (err) {
     console.log(err);
   }
 
-  console.log('Listening at localhost:3000');
+  console.log('Webpack Dev Server running at ' + host + ':' + devServerPort);
 });

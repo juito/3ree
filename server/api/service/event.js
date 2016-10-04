@@ -1,9 +1,9 @@
 import r from 'rethinkdb';
-import config from '../config.json';
+import config from 'config';
 import xss from 'xss';
 
 function connect() {
-  return r.connect(config);
+  return r.connect(config.get('rethinkdb'));
 }
 
 export function liveUpdates(io) {
@@ -27,7 +27,7 @@ export function getEvents() {
   .then(conn => {
     return r
     .table('pulses')
-    .orderBy('id').run(conn)
+    .orderBy(r.desc('created')).run(conn)
     .then(cursor => cursor.toArray());
   });
 }

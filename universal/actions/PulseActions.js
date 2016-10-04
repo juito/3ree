@@ -1,32 +1,30 @@
 import * as types from '../constants/ActionTypes';
 import request from 'superagent';
 
-const serverUrl = 'http://localhost:3000';
-const eventsUrl = serverUrl + '/api/0/events';
+const serverUrl = '';
+const eventsUrl = `${serverUrl}/api/0/events`;
 
 export function setUserId(userId) {
   return {
     type: types.SET_USER_ID,
     userId
-  }
+  };
 }
 
-export function loadEvents(event) {
+export function loadEvents() {
   return dispatch => {
-    dispatch(LoadEventsRequest(event));
-
+    dispatch(loadEventsRequest());
     return request
       .get(eventsUrl)
-      .send(event)
       .set('Accept', 'application/json')
       .end((err, res) => {
         if (err) {
-          dispatch(loadEventsFailure(err, event));
+          dispatch(loadEventsFailure(err));
         } else {
           dispatch(loadEventsSuccess(res.body));
         }
       });
-  }
+  };
 }
 
 export function loadEventsRequest() {
@@ -50,6 +48,7 @@ export function loadEventsFailure(error) {
 }
 
 export function addEvent(event) {
+  console.log('Add event', event);
   return dispatch => {
     dispatch(addEventRequest(event));
 
@@ -64,7 +63,7 @@ export function addEvent(event) {
           dispatch(addEventSuccess(res.body));
         }
       });
-  }
+  };
 }
 
 export function addEventRequest(event) {
@@ -102,7 +101,7 @@ export function deleteEvent(event) {
           dispatch(deleteEventSuccess(res.body));
         }
       });
-  }
+  };
 }
 
 export function deleteEventRequest(event) {
@@ -142,7 +141,7 @@ export function editEvent(event) {
           dispatch(editEventSuccess(res.body));
         }
       });
-  }
+  };
 }
 
 export function editEventRequest(event) {
